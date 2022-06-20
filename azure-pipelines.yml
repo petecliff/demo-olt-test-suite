@@ -12,8 +12,7 @@ pool:
 resources:
   pipelines:
   - pipeline: BuildPipeline
-    source: static-site
-    project: Sandbox
+    source: petecliff.static-site
     trigger:
       stages:
         - Test
