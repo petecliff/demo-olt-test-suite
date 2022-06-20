@@ -9,6 +9,15 @@ trigger:
 pool:
   vmImage: windows-2019
 
+resources:
+  pipelines:
+  - pipeline: build-deploy-pipeline
+    source: static-site
+    project: Sandbox
+    trigger:
+      stages:
+        - Test
+    
 steps:
 - task: Maven@3
   inputs:
