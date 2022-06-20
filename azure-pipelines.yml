@@ -11,7 +11,7 @@ pool:
 
 resources:
   pipelines:
-  - pipeline: build-deploy-pipeline
+  - pipeline: BuildPipeline
     source: static-site
     project: Sandbox
     trigger:
