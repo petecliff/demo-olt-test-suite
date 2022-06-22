@@ -54,11 +54,11 @@ class ChromeTest {
         Path recordsDir = Paths.get(workingDir, "azdo_shared");
         Path recordsFile = Paths.get(workingDir, "azdo_shared", recordsFilename);
 
-        Files.createDirectories(recordsDir);
 
 
         try {
-          Files.deleteIfExists(recordsFile);
+          Files.createDirectories(recordsDir);
+          Files.deleteIfExists(recordsFile); // Shouldn't need this anymore...
           BlobClient blobClient = blobContainerClient.getBlobClient(recordsFilename);
           System.out.println(recordsFile.toString());
           blobClient.downloadToFile(recordsFile.toString());
