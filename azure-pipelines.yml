@@ -1,13 +1,12 @@
-# Maven
-# Build your Java project and run tests with Apache Maven.
-# Add steps that analyze code, save build artifacts, deploy, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/java
-
 trigger:
 - main
 
 pool:
   vmImage: windows-2019
+
+variables:
+  - group: Deployment
+  - group: Test Config
 
 resources:
   pipelines:
@@ -16,9 +15,14 @@ resources:
     trigger:
       stages:
         - Test
-    
+
 steps:
 - task: Maven@3
+  env:
+    SHARED_STORAGE_CONNECTION_STRING: $(sharedStoreConnectionString)
+    WORKING_DIR: $(build.sourcesDirectory)
+    ENVIRONMENT: 'test'
+    HOMEPAGE_URL: $(testEnvURL)
   inputs:
     mavenPomFile: 'pom.xml'
     mavenOptions: '-Xmx1024m'
