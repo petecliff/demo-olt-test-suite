@@ -51,7 +51,11 @@ class ChromeTest {
           }
         }
 
-        Path recordsFile = FileSystems.getDefault().getPath("azdo_shared", recordsFilename);
+        Path recordsDir = Paths.get(workingDir, "azdo_shared");
+        Path recordsFile = Paths.get(workingDir, "azdo_shared", recordsFilename);
+
+        Files.createDirectories(recordsDir);
+
 
         try {
           Files.deleteIfExists(recordsFile);
