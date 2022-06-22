@@ -5,8 +5,8 @@ pool:
   vmImage: windows-2019
 
 variables:
-  - group: Deployment
-  - group: Test Config
+- group: Deployment
+- group: 'Test Config'
 
 resources:
   pipelines:
