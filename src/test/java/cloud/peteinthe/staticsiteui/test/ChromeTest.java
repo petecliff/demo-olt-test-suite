@@ -21,8 +21,10 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 class ChromeTest {
 
     static final Boolean OVERWRITE = true;
+    static final String SUITE_NAME = "OLT_Suite";
 
     WebDriver driver;
+    Boolean runHeadless = false;
 
     @BeforeSuite
     static void setupClass() {
@@ -66,7 +68,7 @@ class ChromeTest {
           DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
 
           BufferedWriter bw = Files.newBufferedWriter(recordsFile, StandardCharsets.UTF_8, StandardOpenOption.APPEND,StandardOpenOption.CREATE);
-          bw.write(String.format("%s %s", "OLS_Suite", ZonedDateTime.now().format(dtf)));
+          bw.write(String.format("%s %s", SUITE_NAME, ZonedDateTime.now().format(dtf)));
           bw.newLine();
        	  bw.close();
         } catch (Exception err) {
@@ -93,7 +95,9 @@ class ChromeTest {
     @BeforeTest
     void setupTest() {
         ChromeOptions options = new ChromeOptions();
-	options.addArguments("--headless"); 
+        if (this.runHeadless) {
+	  options.addArguments("--headless"); 
+        }
         driver = new ChromeDriver(options);
     }
 
