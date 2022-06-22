@@ -5,12 +5,11 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>cloud.peteinthe</groupId>
-  <artifactId>static-site-ui-test</artifactId>
+  <artifactId>olttestsuite</artifactId>
   <version>0.0.1</version>
   <packaging>jar</packaging>
 
-  <name>Hello World</name>
-  <description>The most basic of Java programs.</description>
+  <name>OLT Test Suite</name>
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
