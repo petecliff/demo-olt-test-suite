@@ -34,7 +34,7 @@ class ChromeTest {
 	    
 	System.out.println("SHARED: " + sharedStoreConnectionString.substring(0,8));
 	System.out.println("ENV: " + protectTheEnvironment);
-	System.out.println("WD: " + workindDir);
+	System.out.println("WD: " + workingDir);
       
         String recordsFilename = String.format("records_%s.txt", protectTheEnvironment);
 
