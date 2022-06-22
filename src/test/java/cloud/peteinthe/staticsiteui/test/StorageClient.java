@@ -11,12 +11,13 @@ import java.time.format.DateTimeFormatter;
 
 class StorageClient {
 
-    static final Boolean OVERWRITE = true;
+    public static String SHARED_FOLDER_NAME = "azdo_shared"; 
 
-    private static final String CONNECTION_STRING = System.getenv("SHARED_STORAGE_CONNECTION_STRING");
-    private static final String PROTECT_THE = System.getenv("ENVIRONMENT");
-    private static final String WORKING_DIR = System.getenv("WORKING_DIR");
-    public static final String SHARED_FOLDER_NAME = "azdo_shared"; 
+    private static final Boolean OVERWRITE = true;
+
+    private static String CONNECTION_STRING;
+    private static String PROTECT_THE;
+    private static String WORKING_DIR;
 
     private static BlobServiceClient serviceClient;
     private static BlobContainerClient containerClient;
@@ -24,6 +25,10 @@ class StorageClient {
     public StorageClient() throws IOException {
         this.serviceClient = new BlobServiceClientBuilder().connectionString(CONNECTION_STRING).buildClient();
         this.containerClient = serviceClient.getBlobContainerClient(PROTECT_THE);
+        this.CONNECTION_STRING =  System.getenv("SHARED_STORAGE_CONNECTION_STRING");
+        this.PROTECT_THE = System.getenv("ENVIRONMENT");
+        this.WORKING_DIR = System.getenv("WORKING_DIR");
+
         Path recordsDir = Paths.get(WORKING_DIR, SHARED_FOLDER_NAME);
         Files.createDirectories(recordsDir);
     }
