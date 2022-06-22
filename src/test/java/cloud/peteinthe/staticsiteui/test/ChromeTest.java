@@ -10,6 +10,7 @@ import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import cloud.peteinthe.staticsiteui.test.StorageClient;
 
 import org.testng.annotations.*;
 import org.openqa.selenium.WebDriver;
@@ -27,12 +28,14 @@ class ChromeTest {
 
     WebDriver driver;
     Boolean runHeadless = false;
+    StorageClient storageClient;
 
     @BeforeSuite
-    static void setupClass() throws IOException {
+    void setupClass() throws IOException {
         WebDriverManager.chromedriver().setup();
-
-        Path recordsFile = StorageClient.getFromStorage(RECORD_FILE);
+        storageClient = new StorageClient();
+        
+        Path recordsFile = storageClient.getFromStorage(RECORD_FILE);
         
         DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
         BufferedWriter bw = Files.newBufferedWriter(recordsFile, StandardCharsets.UTF_8, StandardOpenOption.APPEND, StandardOpenOption.CREATE);
@@ -42,9 +45,8 @@ class ChromeTest {
     }
 
     @AfterSuite
-    static void endClass() {
-      StorageClient.store(RECORD_FILE);
-
+    void endClass() throws IOException {
+      storageClient.store(RECORD_FILE);
     }
 
     @BeforeTest

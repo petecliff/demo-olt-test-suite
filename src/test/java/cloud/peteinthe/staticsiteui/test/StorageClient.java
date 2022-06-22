@@ -11,44 +11,47 @@ import java.time.format.DateTimeFormatter;
 
 class StorageClient {
 
-    public static String SHARED_FOLDER_NAME = "azdo_shared"; 
+    private String sharedFolderName = "azdo_shared"; 
+    private String connectionString;
+    private String protectThe;
+    private String workingDir;
 
-    private static final Boolean OVERWRITE = true;
-
-    private static String CONNECTION_STRING;
-    private static String PROTECT_THE;
-    private static String WORKING_DIR;
-
-    private static BlobServiceClient serviceClient;
-    private static BlobContainerClient containerClient;
+    private BlobServiceClient serviceClient;
+    private BlobContainerClient containerClient;
     
-    public StorageClient() throws IOException {
-        this.serviceClient = new BlobServiceClientBuilder().connectionString(CONNECTION_STRING).buildClient();
-        this.containerClient = serviceClient.getBlobContainerClient(PROTECT_THE);
-        this.CONNECTION_STRING =  System.getenv("SHARED_STORAGE_CONNECTION_STRING");
-        this.PROTECT_THE = System.getenv("ENVIRONMENT");
-        this.WORKING_DIR = System.getenv("WORKING_DIR");
+    public StorageClient() {
+        this.connectionString =  System.getenv("SHARED_STORAGE_CONNECTION_STRING");
+        this.protectThe = System.getenv("ENVIRONMENT");
+        this.workingDir = System.getenv("WORKING_DIR");
 
-        Path recordsDir = Paths.get(WORKING_DIR, SHARED_FOLDER_NAME);
-        Files.createDirectories(recordsDir);
+        System.out.println(this.connectionString.substring(0,5));
+        System.out.println(this.protectThe);
+        System.out.println(this.workingDir);
+
+        this.serviceClient = new BlobServiceClientBuilder().connectionString(this.connectionString).buildClient();
+        this.containerClient = serviceClient.getBlobContainerClient(this.protectThe);
     }
 
-    public static Path getFromStorage(String filename) {
+    public Path getFromStorage(String filename) throws IOException {
+        Path recordsDir = Paths.get(this.workingDir, this.sharedFolderName);
+        Files.createDirectories(recordsDir);
+
         Path pathOfDownload = createPath(filename);
 
-        BlobClient blobClient = StorageClient.containerClient.getBlobClient(filename);
+        BlobClient blobClient = this.containerClient.getBlobClient(filename);
         blobClient.downloadToFile(pathOfDownload.toString());
 
         return pathOfDownload;
     }
 
-    public static void store(String filename) {
+    public void store(String filename) throws IOException {
         Path pathOfUpload = createPath(filename);
-        BlobClient blobClient = StorageClient.containerClient.getBlobClient(filename);
-        blobClient.uploadFromFile(pathOfUpload.toString(), OVERWRITE);
+
+        BlobClient blobClient = this.containerClient.getBlobClient(filename);
+        blobClient.uploadFromFile(pathOfUpload.toString(), true);
     }
 
-    private static Path createPath(String filename) {
-      return Paths.get(WORKING_DIR, SHARED_FOLDER_NAME, filename);
+    private Path createPath(String filename) {
+      return Paths.get(this.workingDir, this.sharedFolderName, filename);
     }
 }
