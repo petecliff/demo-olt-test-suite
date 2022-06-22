@@ -21,7 +21,7 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 class ChromeTest {
 
-    public static final String SUITE_NAME = "OLT_Suite";
+    public static final String SUITE_NAME = "MERLIN";
 
     static final Boolean OVERWRITE = true;
     static final String RECORD_FILE = "records.txt";
