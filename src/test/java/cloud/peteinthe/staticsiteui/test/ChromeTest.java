@@ -20,83 +20,38 @@ import io.github.bonigarcia.wdm.WebDriverManager;
 
 class ChromeTest {
 
+    public static final String SUITE_NAME = "OLT_Suite";
+
     static final Boolean OVERWRITE = true;
-    static final String SUITE_NAME = "OLT_Suite";
+    static final String RECORD_FILE = "records.txt";
 
     WebDriver driver;
     Boolean runHeadless = false;
 
     @BeforeSuite
-    static void setupClass() {
+    static void setupClass() throws IOException {
         WebDriverManager.chromedriver().setup();
+
+        Path recordsFile = StorageClient.getFromStorage(RECORD_FILE);
         
-        String sharedStoreConnectionString = System.getenv("SHARED_STORAGE_CONNECTION_STRING");
-        String protectTheEnvironment = System.getenv("ENVIRONMENT");
-        String workingDir = System.getenv("WORKING_DIR");
-	    
-	System.out.println("SHARED: " + sharedStoreConnectionString.substring(0,8));
-	System.out.println("ENV: " + protectTheEnvironment);
-	System.out.println("WD: " + workingDir);
-      
-        String recordsFilename = String.format("records_%s.txt", protectTheEnvironment);
-
-        BlobServiceClient storageClient = new BlobServiceClientBuilder().connectionString(sharedStoreConnectionString).buildClient();
-        BlobContainerClient blobContainerClient = storageClient.getBlobContainerClient(protectTheEnvironment);
-
-        try {
-          blobContainerClient.create();
-        } catch (BlobStorageException err) {
-          if (err.getErrorCode().equals(BlobErrorCode.CONTAINER_ALREADY_EXISTS)) {
-            System.out.println("Container exists - carrying on...");
-          } else {
-            throw err;
-          }
-        }
-
-        Path recordsDir = Paths.get(workingDir, "azdo_shared");
-        Path recordsFile = Paths.get(workingDir, "azdo_shared", recordsFilename);
-
-
-
-        try {
-          Files.createDirectories(recordsDir);
-          Files.deleteIfExists(recordsFile); // Shouldn't need this anymore...
-          BlobClient blobClient = blobContainerClient.getBlobClient(recordsFilename);
-          System.out.println(recordsFile.toString());
-          blobClient.downloadToFile(recordsFile.toString());
-
-          DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
-
-          BufferedWriter bw = Files.newBufferedWriter(recordsFile, StandardCharsets.UTF_8, StandardOpenOption.APPEND,StandardOpenOption.CREATE);
-          bw.write(String.format("%s %s", SUITE_NAME, ZonedDateTime.now().format(dtf)));
-          bw.newLine();
-       	  bw.close();
-        } catch (Exception err) {
-          System.out.println(err);
-        }
+        DateTimeFormatter dtf = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss z");
+        BufferedWriter bw = Files.newBufferedWriter(recordsFile, StandardCharsets.UTF_8, StandardOpenOption.APPEND, StandardOpenOption.CREATE);
+        bw.write(String.format("%s %s", SUITE_NAME, ZonedDateTime.now().format(dtf)));
+        bw.newLine();
+     	  bw.close();    
     }
 
     @AfterSuite
     static void endClass() {
-        String sharedStoreConnectionString = System.getenv("SHARED_STORAGE_CONNECTION_STRING");
-        String protectTheEnvironment = System.getenv("ENVIRONMENT");
-        String workingDir = System.getenv("WORKING_DIR");
+      StorageClient.store(RECORD_FILE);
 
-        String recordsFilename = String.format("records_%s.txt", protectTheEnvironment);
-
-        BlobServiceClient storageClient = new BlobServiceClientBuilder().connectionString(sharedStoreConnectionString).buildClient();
-        BlobContainerClient blobContainerClient = storageClient.getBlobContainerClient(protectTheEnvironment);
-
-        BlobClient blobClient = blobContainerClient.getBlobClient(recordsFilename);
-        Path recordsFile = FileSystems.getDefault().getPath("azdo_shared", recordsFilename);
-        blobClient.uploadFromFile(recordsFile.toString(), OVERWRITE);
     }
 
     @BeforeTest
     void setupTest() {
         ChromeOptions options = new ChromeOptions();
         if (this.runHeadless) {
-	  options.addArguments("--headless"); 
+          options.addArguments("--headless"); 
         }
         driver = new ChromeDriver(options);
     }
