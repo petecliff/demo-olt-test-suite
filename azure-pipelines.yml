@@ -14,7 +14,7 @@ resources:
     source: petecliff.aspen
     trigger:
       stages:
-        - Test
+        - DeployTest
 
 steps:
 - task: Maven@3
