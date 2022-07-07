@@ -22,7 +22,7 @@ steps:
     SHARED_STORAGE_CONNECTION_STRING: $(sharedStoreConnectionString)
     WORKING_DIR: $(build.sourcesDirectory)
     ENVIRONMENT: 'test'
-    HOMEPAGE_URL: $(testEnvURL)
+    HOMEPAGE_URL: $(OLT_PAGE_URL)
   inputs:
     mavenPomFile: 'pom.xml'
     mavenOptions: '-Xmx1024m'
