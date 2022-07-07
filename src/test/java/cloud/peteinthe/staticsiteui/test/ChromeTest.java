@@ -65,7 +65,7 @@ class ChromeTest {
 
     @Test(groups= { "functest" })
     void test() {
-        String homepageUrl = System.getenv("HOMEPAGE_URL");
+        String homepageUrl = System.getenv("OLT_PAGE_URL");
 
         assertThat(homepageUrl).isNotNull();
 
