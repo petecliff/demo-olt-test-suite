@@ -11,7 +11,7 @@ variables:
 resources:
   pipelines:
   - pipeline: BuildPipeline
-    source: petecliff.static-site
+    source: petecliff.aspen
     trigger:
       stages:
         - Test
